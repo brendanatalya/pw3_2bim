@@ -7,16 +7,17 @@
         function Header() {
 
             $this->SetFillColor(33, 37, 41);
+            $this->SetDrawColor(119, 109, 213);
             $this->Rect(0, 0, 210, 28, "F");
             //logo
-            $this->Image("../imagens/icon.png", 10, 6, 10);
+            $this->Image("../imagens/icon.png", 70, 8, 12);
             //fonte: Arial vold 15
             $this->SetFont("Arial", "B", 20);
             //move to the right
             //$this->Cell(40);
             //titulo
             $this->setTextColor(255, 255, 255);
-            $this->Cell(180, 10, iconv("UTF-8", "ISO-8859-1", "Listagem de Usuários"), "B", 0, "C");
+            $this->Cell(195, 10, iconv("UTF-8", "ISO-8859-1", "Gem Company"), "B", 0, "C");
             //quebra de linha
             $this->Ln(20);
         }
@@ -39,9 +40,17 @@
         }
     }
 
+    function converteTexto($texto) {
+        // Detecta o encoding e converte corretamente
+        if (mb_detect_encoding($texto, 'UTF-8', true)) {
+            return iconv("UTF-8", "ISO-8859-1//TRANSLIT//IGNORE", $texto);
+        }
+        return $texto; // já está em ISO-8859-1, não precisa converter
+    }
+/*
     function converteTexto($str) {
         $str = iconv("UTF-8", "windows-1252", $str);
         return $str;
     }
-
+*/
 ?>

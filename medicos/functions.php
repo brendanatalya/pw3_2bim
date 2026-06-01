@@ -1,6 +1,7 @@
 <?php
 
     require_once "../config.php";
+    require_once "../inc/pdf.php";
     require_once DBAPI;
 
     $medicos = null;
@@ -11,6 +12,11 @@
     function index() {
         global $medicos;
         $medicos = find_all("medico");
+        if (!empty($_POST["doctors"])) {
+            $medicos = filter("medico", "nome like '%{$_POST["doctors"]}%'");
+        } else {
+            $medicos = find_all("medico");
+        }
     }
 
     function upload ($pastadestino, $arquivodestino, $tipoarquivo, $nometemp, $tamanhoarquivo) {
@@ -240,11 +246,10 @@
 
     }
 
-    /*gerando pdf */
+   /*gerando pdf */
 
     function pdf ($p = null) {
         //depois copio 
-
         $pdf = new PDF();
         $pdf->AliasNbPages();
         $pdf->AddPage();
@@ -252,13 +257,88 @@
         $medicos = null;
 
         if ($p) {
-            $medicos = filter("medicos", "nome like '%" . $p . "%'");
+            $medicos = filter("medico", "nome like '%" . $p . "%'");
         } else {
-            $medicos = find_all ("medicos");
+            $medicos = find_all ("medico");
         }
 
-        foreach ($medicos as $medico) {
-            $pdf->Cell(0, 10, $medico['id'] . " - " . $medico['nome'] . " - " . $medico['user'], 0, 1); //mudar os negocios d bancp
+        // Converte todos os campos de todos os usuários de uma vez
+        foreach ($medicos as &$medico) { // &$medico = modifica o original
+            foreach ($medico as $campo => $valor) {
+                $medico[$campo] = converteTexto($valor ?? "");
+            }
+        }
+
+        unset($medico);
+        $pdf->SetLeftMargin(0); //zera a margem padrao do fpdf
+        $pdf->SetX(0); 
+        $pdf->SetY(24);
+        $pdf->SetFillColor(33, 37, 41);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->SetFont("Arial", "B", 14);
+        $pdf->Cell(210, 10, converteTexto("Listagem de Médicos"), 0, 1, "C", true);
+        $pdf->Ln(5);
+        $pdf->SetLeftMargin(10);
+
+
+        //cabeçaljo
+        $pdf->SetTextColor(0, 0, 0);
+        
+        $pdf->SetFont("Arial", "B", 10);
+        $pdf->SetX(22); 
+        $pdf->SetFont("Arial", "B", 10);
+        $pdf->SetFillColor(146, 230, 247);
+        $pdf->SetDrawColor(9, 133, 158);
+        $pdf->Cell(40, 10, "ID",    1, 0, "C", true);
+        $pdf->Cell(40, 10, "Nome",  1, 0, "C", true);
+        $pdf->Cell(40, 10, "CRM",  1, 0, "C", true);
+        $pdf->Cell(40, 10, "Foto",  1, 1, "C", true);
+
+        $pdf->SetDrawColor(0, 0, 0);
+
+        foreach ($medicos as $medico) { 
+            
+            $alturaLinha = 40;
+
+            if ($pdf->GetY() + $alturaLinha > $pdf->GetPageHeight() - 20) {
+                $pdf->AddPage();
+                // Repete o cabeçalho na nova página
+                $pdf->SetDrawColor(9, 133, 158);
+                $pdf->SetX(22);
+                $pdf->SetFont("Arial", "B", 10);
+                $pdf->Cell(40, 10, "ID",      1, 0, "C", true);
+                $pdf->Cell(40, 10, "Nome", 1, 0, "C", true);
+                $pdf->Cell(40, 10, "CRM", 1, 0, "C", true);
+                $pdf->Cell(40, 10, "Foto",    1, 1, "C", true);
+            }
+            
+            $pdf->SetDrawColor(9, 133, 158);
+            $pdf->SetX(22);
+            $y = $pdf->GetY();
+
+            $pdf->Cell(40, $alturaLinha, $medico['id'] , 1, 0, "C");
+            $pdf->Cell(40, $alturaLinha, converteTexto($medico['nome']) , 1, 0, "C");
+            $pdf->Cell(40, $alturaLinha, $medico['crm'] , 1, 0, "C");
+            //$pdf->Image("../imagens/" . $medico['foto'], 10, 6, 13);
+            
+            $xfoto = $pdf->GetX(); //pega a posição anterior
+            $pdf->Cell(40, $alturaLinha, "", 1, 1, "C"); // celula para encaixar a foto
+
+            //$caminho = $_SERVER['DOCUMENT_ROOT'] . "/pw3_2bim/imagens/" . $medico['foto']; //caminho pq tinha dado problema
+            $comfoto = $_SERVER['DOCUMENT_ROOT'] . "/pw3_2bim/medicos/fotos/" . $medico['foto'];
+            $semfoto = $_SERVER['DOCUMENT_ROOT'] . "/pw3_2bim/medicos/fotos/semimagem.jpg";
+
+            if (!empty($medico['foto']) && file_exists($comfoto)) {
+                $pdf->Image($comfoto, $xfoto + 8, $y + 2, 26, 0);
+            } elseif (file_exists($semfoto)) {
+                $pdf->Image($semfoto, $xfoto + 8, $y + 2, 26, 0);
+            }
+
+            //$pdf->Image($comfoto, $x + 2, $y + 2, 26, 16);
+            // Reposiciona o cursor após a célula da imagem
+            //$pdf->SetXY($x + 40, $y);
+        
+            
         }
 
         /*

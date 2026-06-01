@@ -1,6 +1,6 @@
 <?php
     require_once("functions.php");
-    if  (!isset($_SESSION)) session_start();
+    if (!isset($_SESSION)) session_start();
     if (isset($_SESSION["user"])) { //verifica se tem um usuaro logado
         if ($_SESSION["user"] != "admin") { // verifica se o usuario é admin
             $_SESSION["message"] = "Você precisa ser administrador para acessar esse recurso!";

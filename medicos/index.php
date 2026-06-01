@@ -1,5 +1,14 @@
 <?php
     require_once("functions.php");
+
+    if (isset($_GET["pdf"])) { //acrescentado para gerar pdf
+        if ($_GET["pdf"] == "ok") {
+            pdf();
+        } else {
+            pdf($_GET["pdf"]);
+        }
+    }
+
     index();
     include(HEADER_TEMPLATE);
 ?>
@@ -12,8 +21,24 @@
                     <?php if (isset($_SESSION["user"])) : //verifica se existe usuario logado?>
                         <a class="btn btn-info" href="add.php"><i class="fa-solid fa-user-plus"></i> Novo Médico</a>
                     <?php endif;?>
+                    <?php if ($_SERVER["REQUEST_METHOD"] == "POST") : ?>
+                    <a class="btn btn-dark" href="index.php?pdf=<?php echo $_POST["doctors"]; ?>" download><i class="fa-solid fa-file-pdf"></i> Listagem</a>
+                    <?php else : ?>
+                    <a class="btn btn-dark" href="index.php?pdf=ok" download><i class="fa-solid fa-file-pdf"></i> Listagem</a>
+                    <?php endif;?>
                     <a class="btn btn-dark" href="index.php"><i class="fa-solid fa-retweet"></i> Atualizar</a>
                 </div>
+            </div>
+
+            <div class="row">
+                <form name="filtro" action="index.php" method="post">
+                    <div class="row">
+                        <div class="input-group mb-2">
+                            <input type="search" class="form-control" name="doctors" maxlength="50" required>
+                            <button type="submit" class="btn btn-secondary"> <i class="fa-solid fa-magnifying-glass"></i> Pesquisar</button>
+                        </div>                        
+                    </div>
+                </form>
             </div>
         </header>
         

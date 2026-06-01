@@ -4,8 +4,6 @@
     include (HEADER_TEMPLATE);
 ?>
 
-    <?php include(HEADER_TEMPLATE); ?>
-
     <h2>Revista <?php echo $revista['id']; ?></h2>
     <hr>
 

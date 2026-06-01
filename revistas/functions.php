@@ -268,24 +268,55 @@
         }
 
         unset($revista);
+        $pdf->SetLeftMargin(0); //zera a margem padrao do fpdf
+        $pdf->SetX(0); 
+        $pdf->SetY(24);
+        $pdf->SetFillColor(33, 37, 41);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->SetFont("Arial", "B", 14);
+        $pdf->Cell(210, 10, converteTexto("Listagem de Revistas"), 0, 1, "C", true);
+        $pdf->Ln(5);
+        $pdf->SetLeftMargin(10);
+
 
         //cabeçaljo
+        $pdf->SetTextColor(0, 0, 0);
+        
+        $pdf->SetFont("Arial", "B", 10);
         $pdf->SetX(22); 
         $pdf->SetFont("Arial", "B", 10);
-        $pdf->Cell(40, 10, "ID",    1, 0, "C");
-        $pdf->Cell(40, 10, "Editora",  1, 0, "C");
-        $pdf->Cell(40, 10, "Edição",  1, 0, "C");
-        $pdf->Cell(40, 10, "Foto",  1, 1, "C");
+        $pdf->SetFillColor(255, 189, 233);
+        $pdf->SetDrawColor(161, 53, 125);
+        $pdf->Cell(40, 10, "ID",    1, 0, "C", true);
+        $pdf->Cell(40, 10, "Editora",  1, 0, "C", true);
+        $pdf->Cell(40, 10, converteTexto("Edição"),  1, 0, "C", true);
+        $pdf->Cell(40, 10, "Foto",  1, 1, "C", true);
 
-        foreach ($revistas as $revista) {
-            $pdf->SetX(22); 
-            $x = $pdf->GetX();
-            $y = $pdf->GetY();
+        $pdf->SetDrawColor(0, 0, 0);
+
+        foreach ($revistas as $revista) { 
+            
             $alturaLinha = 40;
 
-            $pdf->Cell(40, 40, $revista['id'] , 1, 0, "C");
-            $pdf->Cell(40, 40, $revista['editora'] , 1, 0, "C");
-            $pdf->Cell(40, 40, $revista['edicao'] , 1, 0, "C");
+            if ($pdf->GetY() + $alturaLinha > $pdf->GetPageHeight() - 20) {
+                $pdf->AddPage();
+                // Repete o cabeçalho na nova página
+                $pdf->SetDrawColor(161, 53, 125);
+                $pdf->SetX(22);
+                $pdf->SetFont("Arial", "B", 10);
+                $pdf->Cell(40, 10, "ID",      1, 0, "C", true);
+                $pdf->Cell(40, 10, "Editora", 1, 0, "C", true);
+                $pdf->Cell(40, 10, converteTexto("Edição"), 1, 0, "C", true);
+                $pdf->Cell(40, 10, "Foto",    1, 1, "C", true);
+            }
+            
+            $pdf->SetDrawColor(161, 53, 125);
+            $pdf->SetX(22);
+            $y = $pdf->GetY();
+
+            $pdf->Cell(40, $alturaLinha, $revista['id'] , 1, 0, "C");
+            $pdf->Cell(40, $alturaLinha, converteTexto($revista['editora']) , 1, 0, "C");
+            $pdf->Cell(40, $alturaLinha, $revista['edicao'] , 1, 0, "C");
             //$pdf->Image("../imagens/" . $revista['foto'], 10, 6, 13);
             
             $xfoto = $pdf->GetX(); //pega a posição anterior

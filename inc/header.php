@@ -10,16 +10,12 @@
 	<link rel="icon" type="image/x-icon" href="imagens/icon.png">
     <link rel="icon" type="image/x-icon" href="../imagens/icon.png">
 
-    <link rel="stylesheet" href="<?php echo BASEURL; ?>css/awesome/all.min.css">
-    <link rel="stylesheet" href="<?php echo BASEURL; ?>css/bootstrap/bootstrap.min.css">        
-    <link rel="stylesheet" href="<?php echo BASEURL; ?>css/style.css">
-
     <!-- Cookie Consent by TermsFeed -->
     <script type="text/javascript" src="https://www.termsfeed.com/public/cookie-consent/4.2.0/cookie-consent.js" charset="UTF-8"></script>
     <script type="text/javascript" charset="UTF-8">
         document.addEventListener('DOMContentLoaded', function () {
             cookieconsent.run({
-                "notice_banner_type": "interstitial",
+                "notice_banner_type": "simple",
                 "consent_type": "implied",
                 "palette": "light",
                 "language": "pt",
@@ -35,6 +31,9 @@
         Gerenciamento de cookies por <a href="https://www.termsfeed.com/">TermsFeed</a>
     </noscript>
     <!-- End Cookie Consent by TermsFeed -->
+    <link rel="stylesheet" href="<?php echo BASEURL; ?>css/awesome/all.min.css">
+    <link rel="stylesheet" href="<?php echo BASEURL; ?>css/bootstrap/bootstrap.min.css">        
+    <link rel="stylesheet" href="<?php echo BASEURL; ?>css/style.css">
 
 </head>
 <body>
@@ -54,7 +53,7 @@
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="<?php echo BASEURL; ?>customers"> <i class="fa-solid fa-users"></i> Gerenciar Clientes</a></li>
                         <?php
-                            session_start();
+                            if (!isset($_SESSION)) session_start();
                             if (isset($_SESSION["user"])) : //verifica se existe usuario logado?>
                             <li><a class="dropdown-item" href="<?php echo BASEURL; ?>customers/add.php"> <i class="fa-solid fa-user-plus"></i> Novo Cliente</a></li>
                         <?php endif;?>

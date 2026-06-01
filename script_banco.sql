@@ -58,7 +58,7 @@ CREATE TABLE usuarios(
     user varchar(50) not null,
     password varchar(100) not null,
     foto varchar(50)
-);
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO cliente (nome, cpf_cnpj, nasc, endereco, bairro, cep, cidade, estado, telefone, celular, ie, created, modified) VALUES
 ('Ana Paula Lima', '123.456.789-01', '1990-05-10', 'Rua das Rosas, 456', 'Centro', '18000000', 'Sorocaba', 'SP', '15 32101234', '15981234567', '11122233344', '2025-08-27 12:10:00', '2025-08-27 12:10:00'),

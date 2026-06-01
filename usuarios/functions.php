@@ -277,24 +277,55 @@
         }
 
         unset($usuario);
+        $pdf->SetLeftMargin(0); //zera a margem padrao do fpdf
+        $pdf->SetX(0); 
+        $pdf->SetY(24);
+        $pdf->SetFillColor(33, 37, 41);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->SetFont("Arial", "B", 14);
+        $pdf->Cell(210, 10, converteTexto("Listagem de Usuários"), 0, 1, "C", true);
+        $pdf->Ln(5);
+        $pdf->SetLeftMargin(10);
+
 
         //cabeçaljo
+        $pdf->SetTextColor(0, 0, 0);
+        
+        $pdf->SetFont("Arial", "B", 10);
         $pdf->SetX(22); 
         $pdf->SetFont("Arial", "B", 10);
-        $pdf->Cell(40, 10, "ID",    1, 0, "C");
-        $pdf->Cell(40, 10, "Nome",  1, 0, "C");
-        $pdf->Cell(40, 10, "User",  1, 0, "C");
-        $pdf->Cell(40, 10, "Foto",  1, 1, "C");
+        $pdf->SetFillColor(170, 162, 245);
+        $pdf->SetDrawColor(61, 53, 133);
+        $pdf->Cell(40, 10, "ID",    1, 0, "C", true);
+        $pdf->Cell(40, 10, "Nome",  1, 0, "C", true);
+        $pdf->Cell(40, 10, "User",  1, 0, "C", true);
+        $pdf->Cell(40, 10, "Foto",  1, 1, "C", true);
 
-        foreach ($usuarios as $usuario) {
-            $pdf->SetX(22); 
-            $x = $pdf->GetX();
-            $y = $pdf->GetY();
+        $pdf->SetDrawColor(0, 0, 0);
+
+        foreach ($usuarios as $usuario) { 
+            
             $alturaLinha = 40;
 
-            $pdf->Cell(40, 40, $usuario['id'] , 1, 0, "C");
-            $pdf->Cell(40, 40, $usuario['nome'] , 1, 0, "C");
-            $pdf->Cell(40, 40, $usuario['user'] , 1, 0, "C");
+            if ($pdf->GetY() + $alturaLinha > $pdf->GetPageHeight() - 20) {
+                $pdf->AddPage();
+                // Repete o cabeçalho na nova página
+                $pdf->SetDrawColor(61, 53, 133);
+                $pdf->SetX(22);
+                $pdf->SetFont("Arial", "B", 10);
+                $pdf->Cell(40, 10, "ID",      1, 0, "C", true);
+                $pdf->Cell(40, 10, "Nome", 1, 0, "C", true);
+                $pdf->Cell(40, 10, "User", 1, 0, "C", true);
+                $pdf->Cell(40, 10, "Foto",    1, 1, "C", true);
+            }
+            
+            $pdf->SetDrawColor(61, 53, 133);
+            $pdf->SetX(22);
+            $y = $pdf->GetY();
+
+            $pdf->Cell(40, $alturaLinha, $usuario['id'] , 1, 0, "C");
+            $pdf->Cell(40, $alturaLinha, converteTexto($usuario['nome']) , 1, 0, "C");
+            $pdf->Cell(40, $alturaLinha, converteTexto($usuario['user']) , 1, 0, "C");
             //$pdf->Image("../imagens/" . $usuario['foto'], 10, 6, 13);
             
             $xfoto = $pdf->GetX(); //pega a posição anterior
@@ -305,9 +336,9 @@
             $semfoto = $_SERVER['DOCUMENT_ROOT'] . "/pw3_2bim/usuarios/fotos/semimagem.jpg";
 
             if (!empty($usuario['foto']) && file_exists($comfoto)) {
-                $pdf->Image($comfoto, $xfoto + 5, $y + 2, 30, 0);
+                $pdf->Image($comfoto, $xfoto + 6, $y + 6, 26, 0);
             } elseif (file_exists($semfoto)) {
-                $pdf->Image($semfoto, $xfoto + 5, $y + 2, 30, 0);
+                $pdf->Image($semfoto, $xfoto + 6, $y + 6, 26, 0);
             }
 
             //$pdf->Image($comfoto, $x + 2, $y + 2, 26, 16);

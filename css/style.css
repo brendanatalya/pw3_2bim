@@ -185,6 +185,18 @@ footer{
     border: #b62f89 2px solid; 
 }
 
+#cc-nb-main {
+    width: 100% !important;
+    max-width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    position: fixed !important; /* 👈 garante que fica fixo na tela */
+}
 
 @media (max-width: 1000px) {
     .fotomedico {
