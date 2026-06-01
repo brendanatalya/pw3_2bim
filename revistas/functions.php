@@ -323,8 +323,8 @@
             $pdf->Cell(40, $alturaLinha, "", 1, 1, "C"); // celula para encaixar a foto
 
             //$caminho = $_SERVER['DOCUMENT_ROOT'] . "/pw3_2bim/imagens/" . $revista['foto']; //caminho pq tinha dado problema
-            $comfoto = $_SERVER['DOCUMENT_ROOT'] . "/pw3_2bim/revistas/fotos/" . $revista['foto'];
-            $semfoto = $_SERVER['DOCUMENT_ROOT'] . "/pw3_2bim/revistas/fotos/semimagem.jpg";
+            $comfoto = __DIR__ . "/fotos/" . $revista['foto'];
+            $semfoto = __DIR__ . "/fotos/semimagem.jpg";
 
             if (!empty($revista['foto']) && file_exists($comfoto)) {
                 $pdf->Image($comfoto, $xfoto + 8, $y + 2, 26, 0);
